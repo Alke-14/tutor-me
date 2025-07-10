@@ -1,18 +1,31 @@
-import { useState } from "react";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
+import Home from "./pages/Home";
+import Onboarding from "./pages/Onboarding";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+function Layout() {
   return (
     <>
-      <h1>tutor.me</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </Button>
-      </div>
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
+  )
+}
+
+function App() {
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index path="/" element={<Home />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
