@@ -20,17 +20,11 @@ import {
 } from "@/components/ui/card";
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
+import type { UserData } from "@/models/userData";
 
 function Onboarding() {
   // variable for form data. gets saved to browser on save
-  const [userData, setUserData] = useState<{
-    subject: string;
-    learningPace: string;
-    confidenceLevel: string;
-    learningStyles: string[];
-    disabilities: string[];
-    otherDisabilities: string;
-  }>({
+  const [userData, setUserData] = useState<UserData>({
     subject: "",
     learningPace: "",
     confidenceLevel: "",
