@@ -1,16 +1,22 @@
 import { Outlet } from 'react-router'
-import Header from './Header'
 import Footer from './Footer'
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import Header from './Header'
 
-function Layout() {
+function Layout({children}: {children: React.ReactNode}) {
   return (
-    <div className='main-content'>
+    <SidebarProvider>
       <Header />
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
+      <div className='main-content'>
+        <main>
+          <SidebarTrigger />
+          {children}
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </SidebarProvider>
+      
   )
 }
 
