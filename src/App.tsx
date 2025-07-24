@@ -5,6 +5,7 @@ import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
 import Chatbox from "./pages/Chatbox";
+import Faq from "./pages/Faq";
 import { useFont } from "./FontContext";
 import { useEffect } from "react";
 import type { UserData } from "./models/userData";
@@ -39,6 +40,7 @@ function AppRoutes() {
         <Route index path="/" element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/chatbox" element={<Chatbox />} />
+        <Route path="/faq" element={<Faq />} />
       </Route>
     </Routes>
   );

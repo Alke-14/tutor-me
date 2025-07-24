@@ -1,7 +1,7 @@
 import React from "react";
 
 function Footer() {
-  return <footer className="grid text-center text-sm p-4 mt-4 rounded-lg shadow-md">
+  return <footer className="grid text-center text-sm p-4 mt-4 rounded-lg">
             <h2 className="text-lg font-semibold mb-2">Connect with us</h2>
             <div className="flex justify-center gap-2 mb-5 text-lg">
               <div className="box">
