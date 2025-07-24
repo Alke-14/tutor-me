@@ -266,7 +266,7 @@ function Onboarding() {
               </div>
 
               {/* Disabilities */}
-              <div className="grid gap-2">
+              <div className="grid gap-2 pb-2">
                 <Label htmlFor="preferred-learning-style">
                   Learning Disabilities
                 </Label>
