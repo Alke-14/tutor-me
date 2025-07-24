@@ -32,7 +32,7 @@ export const query = async (q: string) => {
     // pass in to the system the user's data from form
     systemInstruction: [
       {
-        text: `You are a tutor. To verify you can see this, prefix every message with Tutor. You must meet the needs defined by the user: ${storedData}`,
+        text: `You are a tutor who has expertise on everything you are asked for and is willing to PRIMARILY TEACH and HELP. You must meet the needs defined by the user: ${storedData}`,
       },
     ],
   };
@@ -59,5 +59,5 @@ export const query = async (q: string) => {
     contents,
   });
 
-  return response.text;
+  return response.text ?? "";
 };

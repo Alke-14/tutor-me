@@ -24,6 +24,11 @@ const items = [
     icon: Inbox,
   },
   {
+    title: "Chatbox",
+    url: "/chatbox",
+    icon: Search,
+  },
+  {
     title: "FAQ",
     url: "#",
     icon: HelpCircle,

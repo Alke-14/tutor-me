@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
+import Chatbox from "./pages/Chatbox";
 import { useFont } from "./FontContext";
 import { useEffect } from "react";
 import type { UserData } from "./models/userData";
@@ -37,6 +38,7 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route index path="/" element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/chatbox" element={<Chatbox />} />
       </Route>
     </Routes>
   );
