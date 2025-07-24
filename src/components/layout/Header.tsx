@@ -30,7 +30,7 @@ const items = [
   },
   {
     title: "FAQ",
-    url: "#",
+    url: "/faq",
     icon: HelpCircle,
   }
 ]
