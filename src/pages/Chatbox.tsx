@@ -61,7 +61,7 @@ function Chatbox() {
   return (
     <div className="flex items-center justify-center">
       <div className="h-[80vh] flex flex-col w-full max-w-2xl mx-auto border rounded-lg p-4">
-        <p className="p-2">Ask me anything!</p>
+        <p className="p-2">Ask Questions related to {}!</p>
 
         {/* Scrollable messages */}
         <ScrollArea className="flex-1 mb-4 pr-2 h-full overflow-y-auto">

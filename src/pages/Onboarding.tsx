@@ -20,11 +20,15 @@ import {
 } from "@/components/ui/card";
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
-import type { UserData } from "@/models/userData";
+import type { UserData } from "@/models/UserData";
+import { useUser } from "@/utils/UserContext";
 
 function Onboarding() {
+  // userData context
+  const { setUserData } = useUser();
+
   // variable for form data. gets saved to browser on save
-  const [userData, setUserData] = useState<UserData>({
+  const [formData, setFormData] = useState<UserData>({
     subject: "",
     learningPace: "",
     confidenceLevel: "",
@@ -40,7 +44,7 @@ function Onboarding() {
 
   // Handles change for all form inputs apart for subject
   const handleChange = (name: string, value: string) => {
-    setUserData((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -52,7 +56,7 @@ function Onboarding() {
     value: string,
     isChecked: boolean
   ) => {
-    setUserData((prevData) => {
+    setFormData((prevData) => {
       // get current array
       const currentArray = prevData[name as keyof typeof prevData] as string[];
 
@@ -77,15 +81,12 @@ function Onboarding() {
     console.log("Submitting to Local Storage");
     e.preventDefault();
 
-    const userDataString = JSON.stringify(userData);
-
-    localStorage.setItem("userData", userDataString);
-
-    navigate("/");
+    setUserData(formData);
+    
+    navigate("/chatbox");
   };
 
   // Current issues:
-  // - lets user submit despite certain options being
   // if we ever come back to this project, we should consider replacing this with React Hook Form.
   return (
     <div className="h-fit align-center flex items-center justify-center">
@@ -112,11 +113,11 @@ function Onboarding() {
                       setOtherSubject(false);
                     }
 
-                    setUserData((prevData) => ({
+                    setFormData((prevData) => ({
                       ...prevData,
                       subject: value,
                     }));
-                    console.log(userData);
+                    console.log(formData);
                   }}
                 >
                   <SelectTrigger className="w-[200px]">
@@ -210,7 +211,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="visual"
-                    checked={userData.learningStyles.includes("visual")}
+                    checked={formData.learningStyles.includes("visual")}
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(
                         "learningStyles",
@@ -224,7 +225,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="auditory"
-                    checked={userData.learningStyles.includes("auditory")}
+                    checked={formData.learningStyles.includes("auditory")}
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(
                         "learningStyles",
@@ -238,7 +239,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="kinesthetic"
-                    checked={userData.learningStyles.includes("kinesthetic")}
+                    checked={formData.learningStyles.includes("kinesthetic")}
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(
                         "learningStyles",
@@ -252,7 +253,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="examples"
-                    checked={userData.learningStyles.includes("examples")}
+                    checked={formData.learningStyles.includes("examples")}
                     onCheckedChange={(checked) => {
                       handleCheckboxChange(
                         "learningStyles",
@@ -273,7 +274,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="dyslexia"
-                    checked={userData.disabilities.includes("dyslexia")}
+                    checked={formData.disabilities.includes("dyslexia")}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange(
                         "disabilities",
@@ -287,7 +288,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="ADHD"
-                    checked={userData.disabilities.includes("ADHD")}
+                    checked={formData.disabilities.includes("ADHD")}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange("disabilities", "ADHD", !!checked)
                     }
@@ -297,7 +298,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="autism"
-                    checked={userData.disabilities.includes("autism")}
+                    checked={formData.disabilities.includes("autism")}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange("disabilities", "autism", !!checked)
                     }
@@ -307,7 +308,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="dysgraphia"
-                    checked={userData.disabilities.includes("dysgraphia")}
+                    checked={formData.disabilities.includes("dysgraphia")}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange(
                         "disabilities",
@@ -321,7 +322,7 @@ function Onboarding() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="dyscalculia"
-                    checked={userData.disabilities.includes("dyscalculia")}
+                    checked={formData.disabilities.includes("dyscalculia")}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange(
                         "disabilities",
