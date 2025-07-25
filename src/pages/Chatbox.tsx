@@ -3,6 +3,7 @@ import { query } from "@/api/api";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ChatMessage from "@/components/ui/ChatMessage";
 
 interface Message {
   role: "user" | "ai";
@@ -39,41 +40,48 @@ function Chatbox() {
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
       console.error(err);
-      setMessages((prev) => [...prev, { role: "ai", text: "Error fetching reply" }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Error fetching reply" },
+      ]);
     } finally {
       setLoading(false);
       setInput("");
     }
   };
 
-  // Auto-scroll when messages update
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollToBottom(); // Scroll to bottom whenever messages array changes
   }, [messages]);
 
   return (
-    <div className="h-[95vh] flex items-center justify-center">
-      <div className="flex flex-col w-full max-w-2xl mx-auto border rounded-lg p-4 h-full">
+    <div className="flex items-center justify-center">
+      <div className="h-[80vh] flex flex-col w-full max-w-2xl mx-auto border rounded-lg p-4">
         <p className="p-2">Ask me anything!</p>
 
         {/* Scrollable messages */}
-        <ScrollArea className="flex-1 mb-4 pr-2 h-[700px]" ref={scrollRef}>
+        <ScrollArea className="flex-1 mb-4 pr-2 h-full overflow-y-auto">
           <div className="space-y-2">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`p-2 rounded-lg max-w-[80%] ${
+                className={`p-2 rounded-lg max-w-[80%] flex flex-col gap-3 text-left ${
                   msg.role === "user"
                     ? "bg-blue-500 text-white self-end justify-self-end"
                     : "bg-gray-200 text-black self-start"
                 }`}
               >
-                {msg.text}
+                <ChatMessage content={msg.text} />
               </div>
             ))}
-            {loading && <div className="text-gray-500 text-sm">Thinking...</div>}
+            {loading && (
+              <div className="text-gray-500 text-sm">Thinking...</div>
+            )}
+            <div ref={scrollRef}></div>
           </div>
         </ScrollArea>
 
