@@ -3,6 +3,9 @@ import { query } from "@/api/api";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ChatMessage from "@/components/ui/ChatMessage";
+import { useUser } from "@/utils/UserContext";
+import { Link } from "react-router";
 
 interface Message {
   role: "user" | "ai";
@@ -13,6 +16,7 @@ function Chatbox() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const { userData } = useUser();
 
   // Ref for scroll area to auto-scroll to bottom
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -26,6 +30,7 @@ function Chatbox() {
     setMessages(updatedMessages);
 
     setLoading(true);
+    setInput("");
 
     try {
       // Combine conversation for memory
@@ -39,61 +44,85 @@ function Chatbox() {
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
       console.error(err);
-      setMessages((prev) => [...prev, { role: "ai", text: "Error fetching reply" }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Error fetching reply" },
+      ]);
     } finally {
       setLoading(false);
-      setInput("");
     }
   };
 
-  // Auto-scroll when messages update
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollToBottom(); // Scroll to bottom whenever messages array changes
   }, [messages]);
 
   return (
-    <div className="h-[95vh] flex items-center justify-center">
-      <div className="flex flex-col w-full max-w-2xl mx-auto border rounded-lg p-4 h-full">
-        <p className="p-2">Ask me anything!</p>
+    <div className="flex items-center justify-center">
+      {userData ? (
+        <div className="h-[80vh] flex flex-col w-full max-w-2xl mx-auto border rounded-lg p-4">
+          <p className="p-2">
+            Ask Questions related to{" "}
+            <span className="capitalize">{userData.subject}</span>!
+          </p>
 
-        {/* Scrollable messages */}
-        <ScrollArea className="flex-1 mb-4 pr-2 h-[700px]" ref={scrollRef}>
-          <div className="space-y-2">
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`p-2 rounded-lg max-w-[80%] ${
-                  msg.role === "user"
-                    ? "bg-blue-500 text-white self-end justify-self-end"
-                    : "bg-gray-200 text-black self-start"
-                }`}
-              >
-                {msg.text}
-              </div>
-            ))}
-            {loading && <div className="text-gray-500 text-sm">Thinking...</div>}
+          {/* Scrollable messages */}
+          <ScrollArea className="flex-1 mb-4 pr-2 h-full overflow-y-auto">
+            <div className="space-y-2">
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`p-2 rounded-lg max-w-[80%] flex flex-col gap-3 text-left ${
+                    msg.role === "user"
+                      ? "bg-blue-500 text-white self-end justify-self-end"
+                      : "bg-gray-200 text-black self-start"
+                  }`}
+                >
+                  <ChatMessage content={msg.text} />
+                </div>
+              ))}
+              {loading && (
+                <div className="text-gray-500 text-sm">Thinking...</div>
+              )}
+              <div ref={scrollRef}></div>
+            </div>
+          </ScrollArea>
+
+          {/* Input area */}
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            />
+            <Button
+              onClick={sendMessage}
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              Send
+            </Button>
           </div>
-        </ScrollArea>
-
-        {/* Input area */}
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          />
+        </div>
+      ) : (
+        <div>
+          <div>
+            Complete the <Link to="/onboarding">Onboarding Form</Link> to use
+            the chatbox
+          </div>
           <Button
-            onClick={sendMessage}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            asChild
+            className="text-xl mt-4 p-5 hover:text-black hover:bg-white"
           >
-            Send
+            <Link to="/onboarding">Onboarding Form</Link>
           </Button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

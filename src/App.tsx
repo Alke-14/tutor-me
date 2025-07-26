@@ -9,6 +9,7 @@ import Faq from "./pages/Faq";
 import { useFont } from "./FontContext";
 import { useEffect } from "react";
 import type { UserData } from "./models/userData";
+import { UserProvider } from "./utils/UserContext";
 
 function App() {
   return (
@@ -35,14 +36,16 @@ function AppRoutes() {
   }, [location.pathname]);
 
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index path="/" element={<Home />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/chatbox" element={<Chatbox />} />
-        <Route path="/faq" element={<Faq />} />
-      </Route>
-    </Routes>
+    <UserProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index path="/" element={<Home />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/chatbox" element={<Chatbox />} />
+          <Route path="/faq" element={<Faq />} />
+        </Route>
+      </Routes>
+    </UserProvider>
   );
 }
 
