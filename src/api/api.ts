@@ -1,63 +1,29 @@
-import { GoogleGenAI } from "@google/genai";
-import { useState } from "react";
 
-// Define AI object that we will use to interact with Gemini's API
-const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+export const query = async (q: string): Promise<string> => {
+  // Define userData variable - the results of the onboarding form
+  const storedData = localStorage.getItem("userData");
 
-if (!apiKey) {
-  console.error(
-    "API key is missing. Ensure GOOGLE_API_KEY is set in your environment variables."
-  );
-  throw new Error("Missing API key");
-}
+  try {
+    const res = await fetch("/api/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: q,
+        userData: storedData,
+      }),
+    });
 
-const ai = new GoogleGenAI({ apiKey });
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("Error from serverless API:", errorData);
+      throw new Error(errorData.error || "Failed to fetch from API");
+    }
 
-// Define userData variable - the results of the onboarding form
-const storedData = localStorage.getItem("userData");
-
-export const query = async (q: string) => {
-  console.log(`Query received: ${q}`);
-  // define settings
-  const config = {
-    // limits response size. can be changed
-    maxOutputTokens: 30000,
-
-    // do NOT let it think... costs too much money
-    thinkingConfig: {
-      thinkingBudget: 0,
-    },
-    responseMimeType: "text/plain",
-
-    // pass in to the system the user's data from form
-    systemInstruction: [
-      {
-        text: `You are a tutor who has expertise on everything you are asked for and is willing to PRIMARILY TEACH and HELP. You must meet the needs defined by the user: ${storedData}`,
-      },
-    ],
-  };
-
-  //define model
-  const model = "gemini-2.5-flash";
-
-  //define contents of message, enter user query as prompt
-  const contents = [
-    {
-      role: "user",
-      parts: [
-        {
-          text: q,
-        },
-      ],
-    },
-  ];
-
-  // generate response given variables above
-  const response = await ai.models.generateContent({
-    model,
-    config,
-    contents,
-  });
-
-  return response.text ?? "";
+    const data = await res.json();
+    return data.reply ?? "";
+  } catch (error) {
+    console.error("Error calling /api/query:", error);
+    return "Error: Could not get response from AI.";
+  }
 };
+
